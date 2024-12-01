@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport"
+          content="width=device-width, user-scalable=no, initial-scale=1.0, maximum-scale=1.0, minimum-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>ماشین حساب</title>
+    <link rel="stylesheet" href="asset/css/calculator.css">
+</head>
+<body>
+<div class="container">
+    <br>
+    <div class="calculator">
+        <div class="theme-color">
+            <div class="calculator-title">
+             <div class="d-flex">
+                 <span class="circle red"></span>
+                 <span class="circle green"></span>
+                 <span class="circle purple"></span>
+             </div>
+             <div class="d-flex color-theme">
+                 <a href="calculator-2.html" class="dark-mood"></a>
+                 <a href="calculator-2.html" class="light-mood"></a>
+             </div>
+            </div>
+            <div class="clear">
+                <button type='button' id="clear">Clear the entire history</button>
+            </div>
+            <div id="history">history</div>
+            <table>
+                <tr>
+                  
+                </tr>
+                <tr>
+                    <td colspan="3"><input type='text' id='result' class='screen input' style="text-align: right;"placeholder="0"></td>
+                </tr>
+            </table>
+        </div>
+    <div class="keys">
+        <button type='button' onclick="clearScreen()" class="myButton">C</button>
+        <button type="button" class="operator color equal-sign myButton" id="myButton"  onclick="display('+')">+</button>
+        <button type="button" class="operator color equal-sign myButton" onclick="display('-')">-</button>
+        <button type="button" class="operator color equal-sign myButton" onclick="display('*')">*</button>
+        <button type="button" class="button" onclick="display(7)">7</button>
+        <button type="button" class="button" onclick="display(8)">8</button>
+        <button type="button" class="button" onclick="display(9)">9</button>
+        <button type="button" class="operator color equal-sign myButton" onclick="display('/')">/</button>
+        <button type="button" class="button" onclick="display(4)">4</button>
+        <button type="button" class="button" onclick="display(5)">5</button>
+        <button type="button" class="button" onclick="display(6)">6</button>
+        <button type="button" class="operator color equal-sign myButton" onclick="display('*')">*</button>
+        <button type="button" class="button" onclick="display(1)">1</button>
+        <button type="button" class="button" onclick="display(2)">2</button>
+        <button type="button" class="button" onclick="display(3)">3</button>
+        <button type="button" class="button equal-sign color-equal color myButton" onclick="solve()">=</button>
+        <button type="button" class="button" onclick="display(0)">0</button>
+        <button type="button" class="button  equal-sign" id="btn-point" onclick="display('.')">.</button>
+    </div>
+<script src="asset/js/calculator.js"></script>
+</body>
+</html>
