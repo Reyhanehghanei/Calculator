@@ -1,77 +1,86 @@
 let result = document.getElementById("result");
-let btnPoints = document.querySelector("#btn-point");
-const historyDiv = document.getElementById("history");
-
-let currentInput = 0;
-let setPoint = false;
+let result2 = document.getElementById("result2");
+let historyDiv = document.getElementById("history");
+let currentInput = "";
 
 const isOperator = (char) => {
   return ["+", "-", "*", "/", "."].includes(char);
 };
+23;
 
 const display = (value) => {
-  console.log(value);
-  if (
-    currentInput === 0 ||
-    !isOperator(currentInput[currentInput.length - 1]) ||
-    !isOperator(value)
-  ) {
-    currentInput += value;
-    result.value = currentInput;
+  console.log(currentInput);
+
+  if (currentInput.length === 1 && currentInput === "0" && value !== ".") {
+    currentInput = value;
+  } else {
+    if (
+      currentInput === "" ||
+      isOperator(currentInput[currentInput.length - 1])
+    ) {
+      if (value === "0") {
+        return;
+      }
+      if (value == ".") {
+        return;
+      }
+      currentInput += value;
+    } else if (
+      !isOperator(currentInput[currentInput.length - 1]) ||
+      !isOperator(value)
+    ) {
+      currentInput += value;
+    }
   }
+
+  result.value = currentInput;
+  result2.value = currentInput;
 };
+
 const solve = () => {
-  if (eval(currentInput) === 0) return;
+  if (currentInput === "") return;
   try {
-    result.value = eval(currentInput);
-    let x = result.value;
+    const evaluatedResult = eval(currentInput);
+    result.value = evaluatedResult;
+    result2.value = currentInput + " = " + evaluatedResult;
+
     let history = JSON.parse(localStorage.getItem("text")) || [];
     if (history.length < 5) {
-      history.push(currentInput + " = " + result.value);
+      history.push(currentInput + " = " + evaluatedResult);
       localStorage.setItem("text", JSON.stringify(history));
     } else {
       console.log("شما نمی‌توانید بیشتر از 5 عدد ذخیره کنید.");
     }
-    // پاک کردن مقدار ورودی ازinput
-    currentInput = 0;
-    result.value = 0;
-    // وارد شدن هیستوری و به روز شدنش
+
+    currentInput = "";
     displayHistory();
-    console.log(currentInput);
   } catch (error) {
     result.value = "Error";
-    currentInput = 0;
+    result2.value = "Error";
+    currentInput = "";
   }
 };
 
 const clearScreen = () => {
   result.value = "";
+  result2.value = "";
   currentInput = "";
 };
-
-btnPoints.addEventListener("click", (e) => {
-  if (setPoint == false) {
-    display.textContent += ".";
-    setPoint = true;
-    console.log(setPoints);
-  }
-});
 
 const displayHistory = () => {
   let history = JSON.parse(localStorage.getItem("text")) || [];
   historyDiv.innerHTML = "";
 
   history.forEach((item) => {
-    const historyItem = document.createElement("div"); // ایجاد یک div جدید برای هر ورودی
+    const historyItem = document.createElement("div");
     historyItem.textContent = item;
     historyDiv.appendChild(historyItem);
   });
 };
+
 window.onload = displayHistory;
 
-// پاک کردن داده های هستوری
 document.querySelector("#clear").addEventListener("click", function () {
   localStorage.removeItem("text");
   displayHistory();
-  //   localStorage.clear();
 });
