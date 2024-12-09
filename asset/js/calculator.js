@@ -6,30 +6,29 @@ let currentInput = "";
 const isOperator = (char) => {
   return ["+", "-", "*", "/", "."].includes(char);
 };
-23;
 
 const display = (value) => {
   console.log(currentInput);
 
+  // If the current input is "0" and the value is not a decimal, replace it
   if (currentInput.length === 1 && currentInput === "0" && value !== ".") {
     currentInput = value;
   } else {
-    if (
-      currentInput === "" ||
-      isOperator(currentInput[currentInput.length - 1])
-    ) {
-      if (value === "0") {
+    // Check if the last character is an operator
+    if (currentInput === "" || isOperator(currentInput[currentInput.length - 1])) {
+      // Prevent adding another operator or a leading zero
+      if (isOperator(value) || value === "0") {
         return;
       }
-      if (value == ".") {
-        return;
+      currentInput += value; // Add number
+    } else {
+      // If the last character is a number, we can add an operator or another number
+      if (isOperator(value) && isOperator(currentInput[currentInput.length - 1])) {
+        // If the last character is also an operator, replace it with the new one
+        currentInput = currentInput.slice(0, -1) + value;
+      } else {
+        currentInput += value; // Add number or operator
       }
-      currentInput += value;
-    } else if (
-      !isOperator(currentInput[currentInput.length - 1]) ||
-      !isOperator(value)
-    ) {
-      currentInput += value;
     }
   }
 
