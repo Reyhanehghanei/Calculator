@@ -1,10 +1,11 @@
 let result = document.getElementById("result");
 let result2 = document.getElementById("result2");
 let historyDiv = document.getElementById("history");
-let currentInput = "";
+let currentInput = "";  
+let lastResult = null; 
 
 const isOperator = (char) => {
-    return ["+", "-", "*", "/", "."].includes(char);
+    return ["+", "-", "*", "/"].includes(char);
 };
 
 const isNegativeSign = (char) => {
@@ -12,54 +13,51 @@ const isNegativeSign = (char) => {
 };
 
 const display = (value) => {
-    console.log(currentInput);
-
-    if (value === ".") {
-        if (currentInput === "" || isOperator(currentInput[currentInput.length - 1])) {
-            currentInput += "0.";
-        } else if (!currentInput.includes(".")) {
-            currentInput += value;
-        }
-
-        result.value = currentInput;
-        result2.value = currentInput;
-        return;
-    }
-
-    if (currentInput.length === 1 && currentInput === "0" && value !== ".") {
-        currentInput = value;
-    } else {
-        if (currentInput === "" || isOperator(currentInput[currentInput.length - 1])) {
-            if (isNegativeSign(value) && currentInput === "") {
+    // Allow the first character to be a negative sign
+    if (currentInput === "" && isNegativeSign(value)) {
+        currentInput += value;  
+    } else if (!isNaN(value) || value === ".") {
+        if (value === ".") {
+            if (currentInput === "" || isOperator(currentInput[currentInput.length - 1])) {
+                currentInput += "0.";
+            } else if (!currentInput.includes(".")) {
                 currentInput += value;
-                result.value = currentInput;
-                result2.value = currentInput;
-                return;
             }
-
-            if (isOperator(value) || value === "0") {
-                return;
-            }
-            currentInput += value;
         } else {
-            if (isOperator(value) && isOperator(currentInput[currentInput.length - 1])) {
-                currentInput = currentInput.slice(0, -1) + value;
+            if (currentInput === "0" && value !== ".") {
+                currentInput = value;
             } else {
                 currentInput += value;
             }
         }
+    } else if (isOperator(value)) {
+        if (currentInput === "" || isOperator(currentInput[currentInput.length - 1])) {
+            if (currentInput !== "" && isOperator(currentInput[currentInput.length - 1])) {
+                currentInput = currentInput.slice(0, -1) + value;  
+            } else {
+                return; 
+            }
+        } else {
+            currentInput += value;  
+        }
     }
-
-    result.value = currentInput;
-    result2.value = currentInput;
+    
+    // Update the display
+    result.value = currentInput;  
+    result2.value = currentInput;  
 };
 
 const solve = () => {
-    if (currentInput === "") return;
+    if (currentInput === "") return;  
     try {
-        const evaluatedResult = eval(currentInput);
-        result.value = evaluatedResult;
-        result2.value = currentInput + " = " + evaluatedResult;
+        if (lastResult !== null) {
+            lastResult *= 2;  
+        } else {
+            lastResult = eval(currentInput);  
+        }
+
+        result.value = lastResult; 
+        result2.value = currentInput + " = " + lastResult;      
 
         let history = JSON.parse(localStorage.getItem("text")) || [];
 
@@ -67,15 +65,16 @@ const solve = () => {
             history.shift();
         }
 
-        history.push(currentInput + " = " + evaluatedResult);
+        history.push(currentInput + " = " + lastResult);     
         localStorage.setItem("text", JSON.stringify(history));
 
-        currentInput = evaluatedResult;
+        currentInput = lastResult.toString(); 
         displayHistory();
     } catch (error) {
         result.value = "Error";
         result2.value = "Error";
         currentInput = "";
+        lastResult = null;  
     }
 };
 
@@ -83,6 +82,7 @@ const clearScreen = () => {
     result.value = "";
     result2.value = "";
     currentInput = "";
+    lastResult = null;  
 };
 
 const displayHistory = () => {
@@ -97,11 +97,10 @@ const displayHistory = () => {
 };
 
 const backspace = () => {
-    // Remove the last character from currentInput
     currentInput = currentInput.slice(0, -1);
 
     // Update the display
-    result.value = currentInput;
+    result.value = currentInput; 
     result2.value = currentInput;
 };
 
@@ -110,4 +109,14 @@ window.onload = displayHistory;
 document.querySelector("#clear").addEventListener("click", function () {
     localStorage.removeItem("text");
     displayHistory();
+});
+
+document.querySelector(".equal-sign").addEventListener("click", function () {
+    solve();  
+});
+
+document.querySelectorAll(".operator").forEach(button => {
+    button.addEventListener("click", function () {
+        display(button.value);  
+    });
 });
